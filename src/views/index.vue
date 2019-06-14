@@ -12,41 +12,6 @@
                  :threshold="threshold" :speed="speed"
                  v-model="active">
         <div v-for="(item,index) in navList" :key="index">
-          <!--推荐部分-->
-          <div v-if="item.text === '推荐'" class="record">
-            <app-scroll :pullUpLoad="pullUpLoad" :pullDownRefresh="pullDownRefresh" v-model="scrollRecord"
-                        @pullingUp="scrollUP('record')"
-                        @pullingDown="scrollDN('record')">
-              <app-slide ref="slide" :autoPlay="isAutoPlayRecord" :loop="isLoopRecord" :showDot="isShowDotRecord"
-                         :interval="intervalRecord"
-                         :threshold="thresholdRecord" :speed="speedRecord"
-                         v-model="activeIndexRecord">
-                <div class="imgWrapper" v-for="(item,index) in recordImg" :key="index">
-                  <img :src="item.img" alt="">
-                </div>
-              </app-slide>
-              <div class="list-item_wrapper">
-                <app-list v-for="(item,index) in recordList" :key="index" :theme="item.theme">
-                  <div slot="top" v-if="item.top" class="top">
-                    <img :src="item.top.poster" alt="">
-                    <div class="desc">
-                      <span class="play"><i class="icon-bofang"></i>{{item.top.play}}</span>
-                      <span class="comment"><i class="icon-list-1-copy"></i>{{item.top.comment}}</span>
-                      <span class="time">{{item.top.time|formatTime}}</span>
-                    </div>
-                  </div>
-                  <span slot="title" v-if="item.title">{{item.title}}</span>
-                  <div slot="other" class="other">
-                    <div class="other_left"
-                         :class="[item.other.description.hot?'is-hot':'',item.other.description.ad?'is-ad':'']">
-                      <span class="ad" v-if="item.other.description.ad">广告</span>{{item.other.description.txt}}
-                    </div>
-                    <div class="other_right"><i class="icon-gengduo"></i></div>
-                  </div>
-                </app-list>
-              </div>
-            </app-scroll>
-          </div>
           <!--直播部分-->
           <div v-if="item.text === '直播'" class="LiveBroadcast">
             <app-scroll :pullUpLoad="false" :pullDownRefresh="pullDownRefresh" v-model="scrollLiveBroadcast"
@@ -68,21 +33,22 @@
               </div>
               <div class="list-item_wrapper">
                 <div class="recommended-live-broadcast">
-                  <div class="head">
+                  <div class="recommended-live-broadcast_head">
                     <span class="top_left">推荐直播</span>
                     <span class="top_right">换一换<i class="icon-shuaxin"></i></span>
                   </div>
-                  <div class="body">
-                    <app-list v-for="(item,index) in LiveBroadcast" :key="index" :theme="item.theme" :class="item.type==='LiveBroadcast'?'is-LiveBroadcast':''">
-                      <div slot="top" v-if="item.top" class="top">
+                  <div class="recommended-live-broadcast_body">
+                    <app-list v-for="(item,index) in LiveBroadcast" :key="index" :theme="item.theme"
+                              :class="item.special?'is-special':''">
+                      <div slot="top" v-if="item.top" class="app-list-item_top">
                         <img :src="item.top.poster" alt="">
                         <div class="desc">
                           <span class="name">{{item.top.name}}</span>
                           <span class="fans"><i class="icon-renyuan"></i>{{item.top.fans}}</span>
                         </div>
                       </div>
-                      <span slot="title" v-if="item.title">{{item.title}}</span>
-                      <div slot="other" class="other">
+                      <div slot="body" v-if="item.body" class="app-list-item_body">{{item.body.title}}</div>
+                      <div slot="other" class="app-list-item_other">
                         <div class="type">{{item.other.description.type}}</div>
                       </div>
                     </app-list>
@@ -110,16 +76,17 @@
                     <span class="right">查看更多<i class="icon-youjiantou"></i></span>
                   </div>
                   <div class="label-list_body">
-                    <app-list v-for="(list,index) in item.list" :key="index" :theme="list.theme" :class="list.type==='LiveBroadcast'?'is-LiveBroadcast':''">
-                      <div slot="top" v-if="list.top" class="top">
+                    <app-list v-for="(list,index) in item.list" :key="index" :theme="list.theme"
+                              :class="list.special?'is-special':''">
+                      <div slot="top" v-if="list.top" class="app-list-item_top">
                         <img :src="list.top.poster" alt="">
                         <div class="desc">
                           <span class="name">{{list.top.name}}</span>
                           <span class="fans"><i class="icon-renyuan"></i>{{list.top.fans}}</span>
                         </div>
                       </div>
-                      <span slot="title" v-if="list.title">{{list.title}}</span>
-                      <div slot="other" class="other">
+                      <span slot="body" v-if="list.body" class="app-list-item_body">{{list.body.title}}</span>
+                      <div slot="other" v-if="list.other" class="app-list-item_other">
                         <div class="type">{{list.other.description.type}}</div>
                       </div>
                     </app-list>
@@ -128,32 +95,227 @@
               </div>
             </app-scroll>
           </div>
-          <!--热门部分-->
-          <div v-if="item.text === '热门'" class="video">
-            <app-scroll :pullUpLoad="pullUpLoad" :pullDownRefresh="pullDownRefresh" v-model="scroll"
-                        @pullingUp="scrollUP('video')"
-                        @pullingDown="scrollDN('video')">
+          <!--推荐部分-->
+          <div v-if="item.text === '推荐'" class="record">
+            <app-scroll :pullUpLoad="pullUpLoad" :pullDownRefresh="pullDownRefresh" v-model="scrollRecord"
+                        @pullingUp="scrollUP('record')"
+                        @pullingDown="scrollDN('record')">
+              <app-slide ref="slide" :autoPlay="isAutoPlayRecord" :loop="isLoopRecord" :showDot="isShowDotRecord"
+                         :interval="intervalRecord"
+                         :threshold="thresholdRecord" :speed="speedRecord"
+                         v-model="activeIndexRecord">
+                <div class="imgWrapper" v-for="(item,index) in recordImg" :key="index">
+                  <img :src="item.img" alt="">
+                </div>
+              </app-slide>
+              <div class="list-item_wrapper">
+                <app-list v-for="(item,index) in recordList" :key="index" :theme="item.theme">
+                  <div slot="top" v-if="item.top" class="app-list-item_top">
+                    <img :src="item.top.poster" alt="">
+                    <div class="desc">
+                      <span class="play"><i class="icon-bofang"></i>{{item.top.play}}</span>
+                      <span class="comment"><i class="icon-list-1-copy"></i>{{item.top.comment}}</span>
+                      <span class="time">{{item.top.time | formatTime}}</span>
+                    </div>
+                  </div>
+                  <span slot="body" v-if="item.title" class="app-list-item_body">{{item.title}}</span>
+                  <div slot="other" class="app-list-item_other">
+                    <div class="other_left"
+                         :class="[item.other.description.hot?'is-hot':'',item.other.description.ad?'is-ad':'']">
+                      <span class="ad" v-if="item.other.description.ad">广告</span>{{item.other.description.txt}}
+                    </div>
+                    <div class="other_right"><i class="icon-gengduo"></i></div>
+                  </div>
+                </app-list>
+              </div>
             </app-scroll>
           </div>
-          <div v-else>{{item.text}}</div>
+          <!--热门部分-->
+          <div v-if="item.text === '热门'" class="popular">
+            <app-scroll :pullUpLoad="pullUpLoad" :pullDownRefresh="pullDownRefresh" v-model="scrollPopular"
+                        @pullingUp="scrollUP('popular')"
+                        @pullingDown="scrollDN('popular')">
+              <div class="popular-head">
+                <span class="popular-head_item">
+                  <i class="icon-PCbofangye_paihangbang" style="font-size: 0.4rem;color: red;margin-right: 0.08rem"></i>排行榜
+                </span>
+                <span class="popular-head_item">
+                  <i class="icon-B-xialaliebiao"
+                     style="font-size: 0.42rem;color: greenyellow;margin-right: 0.08rem"></i>每周必看
+                </span>
+              </div>
+              <div class="list-item_wrapper">
+                <app-list v-for="(item,index) in popularList" :key="index" :theme="item.theme">
+                  <div slot="top" v-if="item.top" class="app-list-item_top">
+                    <img :src="item.top.poster" alt="">
+                    <div class="desc">
+                      <span class="time">{{item.top.time|formatTime}}</span>
+                    </div>
+                  </div>
+                  <div slot="top" v-if="item.body" class="app-list-item_body">
+                    <div class="title">{{item.body.title}}</div>
+                    <div class="type"><span class="txt"
+                                            :class="{'is-hot':item.body.type.hot}">{{item.body.type.txt}}</span></div>
+                    <div class="name">{{item.body.name}}</div>
+                    <div class="seeAndTimeWrapper">
+                      <div class="seeAndTime">
+                        <span class="see">{{item.body.see}}万观看</span>
+                        <span class="time">{{item.body.time}}</span>
+                      </div>
+                      <i class="icon-gengduo"></i>
+                    </div>
+                  </div>
+                </app-list>
+              </div>
+            </app-scroll>
+          </div>
+          <!--追番-->
+          <div v-if="item.text === '追番'" class="chasing">
+            <app-scroll :pullUpLoad="false" :pullDownRefresh="pullDownRefresh" v-model="scrollChasing"
+                        @pullingUp="scrollUP('chasing')"
+                        @pullingDown="scrollDN('chasing')">
+              <app-slide ref="slide" :autoPlay="isAutoPlayChasing" :loop="isLoopChasing" :showDot="isShowDotChasing"
+                         :interval="intervalChasing"
+                         :threshold="thresholdChasing" :speed="speedChasing"
+                         v-model="activeIndexChasing">
+                <div class="imgWrapper" v-for="(item,index) in chasingImg" :key="index">
+                  <img :src="item.img" alt="">
+                </div>
+              </app-slide>
+              <div class="head-list">
+                <div class="head-list_item" v-for="(item,index) in chasingHeadList" :key="index">
+                  <img :src="item.img" alt="">
+                  <span class="txt">{{item.txt}}</span>
+                </div>
+              </div>
+              <div class="label-list-wrapper" v-for="(item,index) in ChasingLabelListBody" :key="index">
+                <div class="label-list_top">
+                  <span class="left">{{item.type}}</span>
+                  <span class="right">查看更多<i class="icon-youjiantou"></i></span>
+                </div>
+                <div class="label-list_body">
+                  <app-list v-for="(list,index) in item.list" :key="index" :theme="list.theme"
+                            :class="list.type==='LiveBroadcast'?'is-LiveBroadcast':''">
+                    <div slot="top" v-if="list.top" class="app-list-item_top">
+                      <img :src="list.top.poster" alt="">
+                      <div class="desc">
+                        <i class="icon-02" v-if="list.top.love"></i>
+                        <span class="member" v-if="list.top.member">会员抢先</span>
+                      </div>
+                    </div>
+                    <div slot="body" v-if="list.body">{{list.body.title}}</div>
+                    <div slot="other" class="app-list-item_other">
+                      <div class="type">{{list.other.description.type}}</div>
+                    </div>
+                  </app-list>
+                </div>
+              </div>
+              <div style="height: 0.2rem"></div>
+            </app-scroll>
+          </div>
+          <!--影视部分-->
+          <div v-if="item.text === '影视'" class="movie">
+            <app-scroll :pullUpLoad="false" :pullDownRefresh="pullDownRefresh" v-model="scrollMovie"
+                        @pullingUp="scrollUP('movie')"
+                        @pullingDown="scrollDN('movie')">
+              <app-slide ref="slide" :autoPlay="isAutoPlayMovie" :loop="isLoopMovie" :showDot="isShowDotMovie"
+                         :interval="intervalMovie"
+                         :threshold="thresholdMovie" :speed="speedMovie"
+                         v-model="activeIndexMovie">
+                <div class="imgWrapper" v-for="(item,index) in movieImg" :key="index">
+                  <img :src="item.img" alt="">
+                </div>
+              </app-slide>
+              <div class="head-list">
+                <div class="head-list_item" v-for="(item,index) in headList" :key="index">
+                  <img :src="item.img" alt="">
+                  <span class="txt">{{item.txt}}</span>
+                </div>
+              </div>
+              <div class="label-list-wrapper" v-for="(item,index) in MovieLabelListBody" :key="index">
+                <div class="label-list_top">
+                  <span class="left">{{item.type}}</span>
+                  <span class="right">查看更多<i class="icon-youjiantou"></i></span>
+                </div>
+                <div class="label-list_body">
+                  <app-list v-for="(list,index) in item.list" :key="index" :theme="list.theme"
+                            :class="list.special?'is-special':''">
+                    <div slot="top" v-if="list.top" class="app-list-item_top">
+                      <img :src="list.top.poster" alt="">
+                      <div class="desc">
+                        <i class="icon-02" v-if="list.top.love"></i>
+                        <span class="member" v-if="list.top.member">会员抢先</span>
+                      </div>
+                    </div>
+                    <div slot="body" v-if="list.body" class="app-list-item_body">{{list.body.title}}</div>
+                    <div slot="other" class="app-list-item_other">
+                      <div class="type">{{list.other.description.type}}</div>
+                    </div>
+                  </app-list>
+                </div>
+              </div>
+              <div class="relatedSuggestion">
+                <div class="relatedSuggestion_head">影视相关推荐</div>
+                <app-list v-for="(item,index) in relatedSuggestionList" :key="index" :theme="item.theme">
+                  <div slot="top" v-if="item.top" class="app-list-item_top">
+                    <img :src="item.top.poster" alt="">
+                  </div>
+                  <div slot="body" v-if="item.body" class="app-list-item_body">
+                    <div class="title">{{item.body.title}}</div>
+                    <div class="name">{{item.body.name}}</div>
+                  </div>
+                </app-list>
+              </div>
+              <div class="comingSoon">
+                <div class="comingSoon_head">即将开播</div>
+                <div class="comingSoon_content">
+                  <app-scroll-not-tab>
+                    <app-scroll-not-tab-item v-for="(item,index) in comingSoonList" :key="index">
+                      <div class="comingSoon_content-item">
+                        <div class="item_head">
+                          <span class="line special"></span>
+                          <span class="time">{{item.time}}</span>
+                          <span class="line"></span>
+                        </div>
+                        <div class="item_body">
+                          <img :src="item.img" alt="">
+                          <span class="type" v-if="item.type">会员抢先</span>
+                          <span class="fans">{{item.fans}}人追剧</span>
+                        </div>
+                        <div class="item_footer">
+                          <span class="name">{{item.name}}</span>
+                          <yd-button bgcolor="#fff" color="#f45a8d"><i class="icon-02" style="font-size: 0.36rem"></i>追剧
+                          </yd-button>
+                        </div>
+                      </div>
+                    </app-scroll-not-tab-item>
+                  </app-scroll-not-tab>
+                </div>
+              </div>
+              <div class="exclusivePlanning">
+                <div class="exclusivePlanning_head">
+                  <div class="exclusivePlanning_left">独家策划</div>
+                  <div class="exclusivePlanning_right">查看更多<i class="icon-youjiantou" style="font-size: 0.4rem"></i>
+                  </div>
+                </div>
+                <div class="exclusivePlanning_content">
+                  <div class="exclusivePlanning_content-item" v-for="(item,index) in exclusivePlanningList"
+                       :key="index">
+                    <img :src="item.img" alt="">
+                    <span class="name">{{item.name}}</span>
+                    <span class="time" v-if="item.time">第{{item.time}}期</span>
+                    <span class="txt" v-if="item.txt">{{item.txt}}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="height: 0.2rem"></div>
+            </app-scroll>
+          </div>
         </div>
       </app-slide>
     </div>
-    <!--点击列表更多，出现底部弹出框，可以分享，点赞啥的。。。-->
-    <div class="popupShow-wrapper">
-      <yd-popup v-model="popupShow" position="bottom" maskerOpacity="0.2">
-        <div class="popup-content">
-          <div class="popup-content_top">
-            <app-scroll-tab :navList="popupListUP" v-model="active" font-size="0.24rem"
-                            activeColor="#585858" ref="scrollTabPopupTop" icon></app-scroll-tab>
-          </div>
-          <div class="popup-content_bottom">
-            <app-scroll-tab :navList="popupListDown" v-model="active" font-size="0.24rem"
-                            activeColor="#585858" ref="scrollTabPopupDown" icon></app-scroll-tab>
-          </div>
-        </div>
-        <a class="cancel" @click="cancel" href="javascript: void(0)">取消</a>
-      </yd-popup>
+    <div class="me-broadcast-live" v-if="active===0">
+      <a href="javascript:void(0)">我要<br>直播</a>
     </div>
   </div>
 </template>
@@ -165,10 +327,13 @@
       'app-scroll-tab': require('../../src/components/scrollTab/scroll-tab.vue').default,
       'app-scroll': require('../components/scroll/scroll.vue').default,
       'app-list': require('../components/list/list.vue').default,
-      'app-slide': require('../components/slider/slide.vue').default
+      'app-slide': require('../components/slider/slide.vue').default,
+      'app-scroll-not-tab': require('../components/scrollNotTab/scroll-not-tab.vue').default,
+      'app-scroll-not-tab-item': require('../components/scrollNotTab/scroll-not-tab-item.vue').default
     },
     data() {
       return {
+        num: 30,
         playerOptions: {
           autoplay: false,
           muted: false,
@@ -180,8 +345,6 @@
           }],
           poster: require('../assets/image/700x400.png')
         },
-        num: 20,
-        typeChannel: false,
         active: 1,
         navList: [
           {
@@ -204,70 +367,13 @@
             text: '70年'
           }
         ],
-        myChannelList: [],
-        recommendList: [
-          {
-            text: '党媒推荐',
-            isLong: true
-          },
-          {
-            text: '动物'
-          },
-          {
-            text: '音乐'
-          },
-          {
-            text: '电影'
-          },
-          {
-            text: '科学'
-          },
-          {
-            text: '股票'
-          },
-          {
-            text: '教育'
-          },
-          {
-            text: '家具'
-          },
-          {
-            text: '宠物'
-          },
-          {
-            text: '文化'
-          },
-          {
-            text: '游戏'
-          },
-          {
-            text: '手机'
-          },
-          {
-            text: '钓鱼'
-          },
-          {
-            text: '旅游'
-          },
-          {
-            text: '时尚'
-          },
-          {
-            text: '三农'
-          },
-          {
-            text: '数码'
-          },
-          {
-            text: '影视'
-          }
-        ],
-        btnChannel: true,
         typeScroll: 'UP',
         //上拉刷新滚动加载所需参数
-        scroll: 0,
         scrollRecord: 0,
         scrollLiveBroadcast: 0,
+        scrollPopular: 0,
+        scrollMovie: 0,
+        scrollChasing: 0,
         numScroll: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
         pullUpLoad: {
           txt: {
@@ -298,6 +404,22 @@
         speedLiveBroadcast: 400,
         thresholdLiveBroadcast: 0.3,
         intervalLiveBroadcast: 4000,
+        //影视部分slide
+        activeIndexMovie: 0,
+        isAutoPlayMovie: true,
+        isLoopMovie: true,
+        isShowDotMovie: true,
+        speedMovie: 400,
+        thresholdMovie: 0.3,
+        intervalMovie: 4000,
+        //追番部分slide
+        activeIndexChasing: 0,
+        isAutoPlayChasing: true,
+        isLoopChasing: true,
+        isShowDotChasing: true,
+        speedChasing: 400,
+        thresholdChasing: 0.3,
+        intervalChasing: 4000,
         recordImg: [
           {
             img: require('../assets/image/banner_1.jpg')
@@ -494,12 +616,14 @@
           {
             id: 1,
             theme: 1,
-            type: 'LiveBroadcast',
-            title: '唐老鸭冒险记',
+            special: true,
             top: {
               poster: require('../assets/image/700x400.png'),
               name: '萝莉贩卖姬',
               fans: 6621
+            },
+            body: {
+              title: '唐老鸭冒险记'
             },
             other: {
               description: {
@@ -510,12 +634,14 @@
           {
             id: 2,
             theme: 1,
-            type: 'LiveBroadcast',
-            title: '鸭梨：三号皇后 龙法多多少少',
+            special: true,
             top: {
               poster: require('../assets/image/700x400.png'),
               name: '云朵浅浅撒下鸭梨',
               fans: 6621
+            },
+            body: {
+              title: '鸭梨：三号皇后 龙法多多少少'
             },
             other: {
               description: {
@@ -526,12 +652,14 @@
           {
             id: 3,
             theme: 1,
-            type: 'LiveBroadcast',
-            title: '【清晨】 治愈男声吟唱',
+            special: true,
             top: {
               poster: require('../assets/image/700x400.png'),
               name: '迷路的牙刷',
               fans: 6621
+            },
+            body: {
+              title: '连续一个月联播14个小时，三生三世'
             },
             other: {
               description: {
@@ -542,12 +670,14 @@
           {
             id: 4,
             theme: 1,
-            type: 'LiveBroadcast',
-            title: '连续一个月联播14个小时，三生三世',
+            special: true,
             top: {
               poster: require('../assets/image/700x400.png'),
               name: '硬碟君',
               fans: 6621
+            },
+            body: {
+              title: '连续一个月联播14个小时，三生三世'
             },
             other: {
               description: {
@@ -558,12 +688,14 @@
           {
             id: 5,
             theme: 1,
-            type: 'LiveBroadcast',
-            title: '唐老鸭冒险记',
+            special: true,
             top: {
               poster: require('../assets/image/700x400.png'),
               name: '萝莉贩卖姬',
               fans: 6621
+            },
+            body: {
+              title: '唐老鸭冒险记'
             },
             other: {
               description: {
@@ -574,12 +706,14 @@
           {
             id: 6,
             theme: 1,
-            type: 'LiveBroadcast',
-            title: '唐老鸭冒险记',
+            special: true,
             top: {
               poster: require('../assets/image/700x400.png'),
               name: '萝莉贩卖姬',
               fans: 6621
+            },
+            body: {
+              title: '唐老鸭冒险记'
             },
             other: {
               description: {
@@ -654,12 +788,14 @@
               {
                 id: 1,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '唐老鸭冒险记',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '萝莉贩卖姬',
                   fans: 6621
+                },
+                body: {
+                  title: '唐老鸭冒险记'
                 },
                 other: {
                   description: {
@@ -670,12 +806,14 @@
               {
                 id: 2,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '鸭梨：三号皇后 龙法多多少少',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '云朵浅浅撒下鸭梨',
                   fans: 6621
+                },
+                body: {
+                  title: '鸭梨：三号皇后 龙法多多少少'
                 },
                 other: {
                   description: {
@@ -686,12 +824,14 @@
               {
                 id: 3,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '【清晨】 治愈男声吟唱',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '迷路的牙刷',
                   fans: 6621
+                },
+                body: {
+                  title: '【清晨】 治愈男声吟唱'
                 },
                 other: {
                   description: {
@@ -702,12 +842,14 @@
               {
                 id: 4,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '连续一个月联播14个小时，三生三世',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '硬碟君',
                   fans: 6621
+                },
+                body: {
+                  title: '连续一个月联播14个小时，三生三世'
                 },
                 other: {
                   description: {
@@ -723,12 +865,14 @@
               {
                 id: 1,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '唐老鸭冒险记',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '萝莉贩卖姬',
                   fans: 6621
+                },
+                body: {
+                  title: '唐老鸭冒险记'
                 },
                 other: {
                   description: {
@@ -739,12 +883,14 @@
               {
                 id: 2,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '鸭梨：三号皇后 龙法多多少少',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '云朵浅浅撒下鸭梨',
                   fans: 6621
+                },
+                body: {
+                  title: '鸭梨：三号皇后 龙法多多少少'
                 },
                 other: {
                   description: {
@@ -755,12 +901,14 @@
               {
                 id: 3,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '【清晨】 治愈男声吟唱',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '迷路的牙刷',
                   fans: 6621
+                },
+                body: {
+                  title: '【清晨】 治愈男声吟唱'
                 },
                 other: {
                   description: {
@@ -771,12 +919,14 @@
               {
                 id: 4,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '连续一个月联播14个小时，三生三世',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '硬碟君',
                   fans: 6621
+                },
+                body: {
+                  title: '连续一个月联播14个小时，三生三世'
                 },
                 other: {
                   description: {
@@ -792,12 +942,14 @@
               {
                 id: 1,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '唐老鸭冒险记',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '萝莉贩卖姬',
                   fans: 6621
+                },
+                body: {
+                  title: '唐老鸭冒险记'
                 },
                 other: {
                   description: {
@@ -808,12 +960,14 @@
               {
                 id: 2,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '鸭梨：三号皇后 龙法多多少少',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '云朵浅浅撒下鸭梨',
                   fans: 6621
+                },
+                body: {
+                  title: '鸭梨：三号皇后 龙法多多少少'
                 },
                 other: {
                   description: {
@@ -824,12 +978,14 @@
               {
                 id: 3,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '【清晨】 治愈男声吟唱',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '迷路的牙刷',
                   fans: 6621
+                },
+                body: {
+                  title: '【清晨】 治愈男声吟唱'
                 },
                 other: {
                   description: {
@@ -840,12 +996,14 @@
               {
                 id: 4,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '连续一个月联播14个小时，三生三世',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '硬碟君',
                   fans: 6621
+                },
+                body: {
+                  title: '连续一个月联播14个小时，三生三世'
                 },
                 other: {
                   description: {
@@ -861,12 +1019,14 @@
               {
                 id: 1,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '唐老鸭冒险记',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '萝莉贩卖姬',
                   fans: 6621
+                },
+                body: {
+                  title: '唐老鸭冒险记'
                 },
                 other: {
                   description: {
@@ -877,12 +1037,14 @@
               {
                 id: 2,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '鸭梨：三号皇后 龙法多多少少',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '云朵浅浅撒下鸭梨',
                   fans: 6621
+                },
+                body: {
+                  title: '鸭梨：三号皇后 龙法多多少少'
                 },
                 other: {
                   description: {
@@ -893,12 +1055,14 @@
               {
                 id: 3,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '【清晨】 治愈男声吟唱',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '迷路的牙刷',
                   fans: 6621
+                },
+                body: {
+                  title: '【清晨】 治愈男声吟唱'
                 },
                 other: {
                   description: {
@@ -909,12 +1073,14 @@
               {
                 id: 4,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '连续一个月联播14个小时，三生三世',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '硬碟君',
                   fans: 6621
+                },
+                body: {
+                  title: '连续一个月联播14个小时，三生三世'
                 },
                 other: {
                   description: {
@@ -930,12 +1096,14 @@
               {
                 id: 1,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '唐老鸭冒险记',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '萝莉贩卖姬',
                   fans: 6621
+                },
+                body: {
+                  title: '唐老鸭冒险记'
                 },
                 other: {
                   description: {
@@ -946,12 +1114,14 @@
               {
                 id: 2,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '鸭梨：三号皇后 龙法多多少少',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '云朵浅浅撒下鸭梨',
                   fans: 6621
+                },
+                body: {
+                  title: '鸭梨：三号皇后 龙法多多少少'
                 },
                 other: {
                   description: {
@@ -962,12 +1132,14 @@
               {
                 id: 3,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '【清晨】 治愈男声吟唱',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '迷路的牙刷',
                   fans: 6621
+                },
+                body: {
+                  title: '【清晨】 治愈男声吟唱'
                 },
                 other: {
                   description: {
@@ -978,12 +1150,14 @@
               {
                 id: 4,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '连续一个月联播14个小时，三生三世',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '硬碟君',
                   fans: 6621
+                },
+                body: {
+                  title: '连续一个月联播14个小时，三生三世'
                 },
                 other: {
                   description: {
@@ -999,12 +1173,14 @@
               {
                 id: 1,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '唐老鸭冒险记',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '萝莉贩卖姬',
                   fans: 6621
+                },
+                body: {
+                  title: '唐老鸭冒险记'
                 },
                 other: {
                   description: {
@@ -1015,12 +1191,14 @@
               {
                 id: 2,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '鸭梨：三号皇后 龙法多多少少',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '云朵浅浅撒下鸭梨',
                   fans: 6621
+                },
+                body: {
+                  title: '鸭梨：三号皇后 龙法多多少少'
                 },
                 other: {
                   description: {
@@ -1031,12 +1209,14 @@
               {
                 id: 3,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '【清晨】 治愈男声吟唱',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '迷路的牙刷',
                   fans: 6621
+                },
+                body: {
+                  title: '【清晨】 治愈男声吟唱'
                 },
                 other: {
                   description: {
@@ -1047,12 +1227,14 @@
               {
                 id: 4,
                 theme: 1,
-                type: 'LiveBroadcast',
-                title: '连续一个月联播14个小时，三生三世',
+                special: true,
                 top: {
                   poster: require('../assets/image/700x400.png'),
                   name: '硬碟君',
                   fans: 6621
+                },
+                body: {
+                  title: '连续一个月联播14个小时，三生三世'
                 },
                 other: {
                   description: {
@@ -1064,65 +1246,1143 @@
           }
         ],
         popupShow: false,
-        //底部弹出层
-        popupListUP: [
+        //热门数据
+        popularList: [
           {
-            icon: 'icon-tuwen',
-            text: '转发到头条'
+            id: 1,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '【短评】 王者荣耀kpl决赛舞台倒塌折射出国内电竞产业多种问题啊啊啊啊啊啊啊',
+              type: {
+                txt: '新上榜',
+                hot: true
+              },
+              name: '芒果冰ol',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: '微信'
+            id: 2,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 110
+            },
+            body: {
+              title: '大sao包了4斤粽子，咸肉蛋黄蜜枣，和儿子一起吃三口',
+              type: {},
+              name: '徐大sao',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: '朋友圈'
+            id: 3,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '自制大肠刺身伴侣，吃大肠刺身必备',
+              type: {
+                txt: '新上榜',
+                hot: true
+              },
+              name: '手工梗',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: '钉钉'
+            id: 4,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '游戏史上最气人的游戏，键盘砸坏是个都无法通关！',
+              type: {
+                txt: '单机游戏。人气飙升',
+                hot: true
+              },
+              name: '金闪闪',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: 'QQ'
+            id: 5,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '【巴啦啦小魔仙】‘游戏王子’揭秘迷之口音来历',
+              type: {},
+              name: '巴啦啦小魔仙',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: 'QQ空间'
+            id: 6,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '【短评】 王者荣耀kpl决赛舞台倒塌折射出国内电竞产业多种问题啊啊啊啊啊啊啊',
+              type: {
+                txt: '新上榜',
+                hot: true
+              },
+              name: '芒果冰ol',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: '系统分享'
+            id: 7,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 110
+            },
+            body: {
+              title: '大sao包了4斤粽子，咸肉蛋黄蜜枣，和儿子一起吃三口',
+              type: {},
+              name: '徐大sao',
+              see: 60.7,
+              time: '17小时前'
+            }
           },
           {
-            icon: 'icon-tuwen',
-            text: '复制链接'
+            id: 8,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '自制大肠刺身伴侣，吃大肠刺身必备',
+              type: {
+                txt: '新上榜',
+                hot: true
+              },
+              name: '手工梗',
+              see: 60.7,
+              time: '17小时前'
+            }
+          },
+          {
+            id: 9,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '游戏史上最气人的游戏，键盘砸坏是个都无法通关！',
+              type: {
+                txt: '单机游戏。人气飙升',
+                hot: true
+              },
+              name: '金闪闪',
+              see: 60.7,
+              time: '17小时前'
+            }
+          },
+          {
+            id: 10,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png'),
+              time: 520
+            },
+            body: {
+              title: '【巴啦啦小魔仙】‘游戏王子’揭秘迷之口音来历',
+              type: {},
+              name: '巴啦啦小魔仙',
+              see: 60.7,
+              time: '17小时前'
+            }
           }
         ],
-        popupListDown: [
+        //追番数据
+        chasingImg: [
+        {
+          img: require('../assets/image/chasing-1.jpg')
+        },
+        {
+          img: require('../assets/image/chasing-2.jpg')
+        },
+        {
+          img: require('../assets/image/chasing-3.jpg')
+        },
+        {
+          img: require('../assets/image/chasing-4.jpg')
+        }
+      ],
+        chasingHeadList: [
           {
-            icon: 'icon-tuwen',
-            text: '帮上头条'
+            img: require('../assets/image/80x80.png'),
+            txt: '番剧'
           },
           {
-            icon: 'icon-tuwen',
-            text: '收藏'
+            img: require('../assets/image/80x80.png'),
+            txt: '国创'
           },
           {
-            icon: 'icon-tuwen',
-            text: '不感兴趣'
+            img: require('../assets/image/80x80.png'),
+            txt: '时间表'
           },
           {
-            icon: 'icon-tuwen',
-            text: '顶'
+            img: require('../assets/image/80x80.png'),
+            txt: '索引'
           },
           {
-            icon: 'icon-tuwen',
-            text: '踩'
+            img: require('../assets/image/80x80.png'),
+            txt: '点评'
+          }
+        ],
+        ChasingLabelListBody: [
+          {
+            type: '番剧推荐',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
           },
           {
-            icon: 'icon-tuwen',
-            text: '举报'
+            type: '国创推荐',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            type: '兴趣推荐',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                type: 'LiveBroadcast',
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        //影视数据
+        MovieLabelListBody: [
+          {
+            type: '纪录片热播',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '这就是中国'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            type: '电影热播',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '这就是中国'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            type: '电视剧热播',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '这就是中国'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            type: '综艺热播',
+            list: [
+              {
+                id: 1,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '宠物医院'
+                },
+                other: {
+                  description: {
+                    type: '一次相遇一生羁绊'
+                  }
+                }
+              },
+              {
+                id: 2,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '这就是中国'
+                },
+                other: {
+                  description: {
+                    type: '张伟为谈中国崛起'
+                  }
+                }
+              },
+              {
+                id: 3,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '本草中华'
+                },
+                other: {
+                  description: {
+                    type: '疗愈生命的智慧'
+                  }
+                }
+              },
+              {
+                id: 4,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: true
+                },
+                body: {
+                  title: '一百年长吗'
+                },
+                other: {
+                  description: {
+                    type: '五味杂陈手艺人生'
+                  }
+                }
+              },
+              {
+                id: 5,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '猫咪国度'
+                },
+                other: {
+                  description: {
+                    type: '猫咪会统治世界吧'
+                  }
+                }
+              },
+              {
+                id: 6,
+                theme: 1,
+                special: true,
+                top: {
+                  poster: require('../assets/image/300x450.png'),
+                  love: true,
+                  member: false
+                },
+                body: {
+                  title: '从秦皇岛汉武'
+                },
+                other: {
+                  description: {
+                    type: '大型史诗纪录片'
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        movieImg: [
+          {
+            img: require('../assets/image/movie-1.jpg')
+          },
+          {
+            img: require('../assets/image/movie-2.jpg')
+          },
+          {
+            img: require('../assets/image/movie-4.jpg')
+          },
+          {
+            img: require('../assets/image/movie-5.jpg')
+          }
+        ],
+        headList: [
+          {
+            img: require('../assets/image/80x80.png'),
+            txt: '纪录片'
+          },
+          {
+            img: require('../assets/image/80x80.png'),
+            txt: '电影'
+          },
+          {
+            img: require('../assets/image/80x80.png'),
+            txt: '电视剧'
+          },
+          {
+            img: require('../assets/image/80x80.png'),
+            txt: '热门榜单'
+          },
+          {
+            img: require('../assets/image/80x80.png'),
+            txt: '非正式会谈'
+          }
+        ],
+        relatedSuggestionList: [
+          {
+            id: 1,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png')
+            },
+            body: {
+              title: '【短评】 王者荣耀kpl决赛舞台倒塌折射出国内电竞产业多种问题啊啊啊啊啊啊啊',
+              type: {},
+              name: '嗯？没了？'
+            }
+          },
+          {
+            id: 2,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png')
+            },
+            body: {
+              title: '大sao包了4斤粽子，咸肉蛋黄蜜枣，和儿子一起吃三口',
+              type: {},
+              name: '徐大sao'
+            }
+          },
+          {
+            id: 3,
+            theme: 2,
+            top: {
+              poster: require('../assets/image/700x400.png')
+            },
+            body: {
+              title: '自制大肠刺身伴侣，吃大肠刺身必备',
+              type: {},
+              name: '手工梗'
+            }
+          }
+        ],
+        comingSoonList: [
+          {
+            time: '今天18:00',
+            img: require('../assets/image/300x450.png'),
+            type: true,
+            name: '极限S: 羽毛球篇',
+            fans: 2117
+          },
+          {
+            time: '06-12 00:00',
+            img: require('../assets/image/300x450.png'),
+            type: true,
+            name: '最后的警察',
+            fans: 4569
+          },
+          {
+            time: '06-12 18:00',
+            img: require('../assets/image/300x450.png'),
+            type: true,
+            name: '少林三十六房',
+            fans: 3737
+          },
+          {
+            time: '06-12 19:00',
+            img: require('../assets/image/300x450.png'),
+            type: true,
+            name: '极限S: 羽毛球篇',
+            fans: 2117
+          },
+          {
+            time: '06-12 20:00',
+            img: require('../assets/image/300x450.png'),
+            type: true,
+            name: '最后的警察',
+            fans: 4569
+          },
+          {
+            time: '06-12 21:00',
+            img: require('../assets/image/300x450.png'),
+            type: true,
+            name: '少林三十六房',
+            fans: 3737
+          }
+        ],
+        exclusivePlanningList: [
+          {
+            img: require('../assets/image/200x100.png'),
+            name: '周末放映室',
+            time: 232
+          },
+          {
+            img: require('../assets/image/200x100.png'),
+            name: '俱乐部',
+            time: 19
+          },
+          {
+            img: require('../assets/image/200x100.png'),
+            name: '邵氏出品',
+            txt: '必属佳品'
           }
         ],
         //app-slider
@@ -1136,14 +2396,7 @@
         interval: 4000
       }
     },
-    computed: {
-      btnChange() {
-        return this.btnChannel === true ? '编辑' : '完成'
-      },
-      chanelTxt() {
-        return this.btnChannel === true ? '点击进入频道' : '拖拽可进行排序'
-      }
-    },
+    computed: {},
     methods: {
       onPlayerPlay(player, item) {
         console.log(item)
@@ -1153,36 +2406,13 @@
       onPlayerPause(player) {
         console.log('player pause!', player)
       },
-      //推荐广告下载
-      goDownLoad() {
-        this.$dialog.toast(
-          {
-            mes: '下载成功',
-            timeout: 1500,
-            icon: 'success'
-          }
-        )
-      },
-      //左右滑动改变
-      activeChange(val) {
-        // console.log(val, this.active)
-        this.active = val
-      },
       //底部弹出框关闭
       cancel() {
         this.popupShow = false
       },
-      //打开底部弹出框
-      clickOperating() {
-        this.popupShow = true
-      },
       //nav导航栏，点击
       itemClick(val) {
         // console.log(val)
-      },
-      //我的频道，切换
-      btnClk() {
-        this.btnChannel = !this.btnChannel
       },
       //更新数据
       async getPostList(type) {
@@ -1192,22 +2422,24 @@
         let _list = []
         let count = parseInt(num)
         switch (type) {
-          case 'video':
-            while (count--) {
-              _list.push(this.bodyList[count])
+          case 'LiveBroadcast':
+            while (count-- && count-- > 1) {
+              _list.push(this.LiveBroadcast[count])
             }
+            console.log(_list, num)
             setTimeout(() => {
               if (this.typeScroll === 'UP' && num > 5) {
-                self.bodyList = [...self.bodyList, {theme: 1, time: 45}, ..._list]
-                self.scroll < 0 ? self.scroll = 1 : self.scroll++
+                //labelListBody更新数据
+                console.log('gogoogo')
+                self.scrollLiveBroadcast < 0 ? self.scrollLiveBroadcast = 1 : self.scrollLiveBroadcast++
               } else if (this.typeScroll === 'UP' && num <= 5) {
-                self.scroll === 0 ? self.scroll-- : self.scroll = 0
+                self.scrollLiveBroadcast === 0 ? self.scrollLiveBroadcast-- : self.scrollLiveBroadcast = 0
               } else if (this.typeScroll === 'DN' && num > 5) {
-                self.scroll <= 0 ? self.scroll-- : self.scroll++
-                self.bodyList = [..._list, {theme: 1, time: 45}, ...self.bodyList]
-                self.$set(this.pullDownRefresh, 'success', `已为您更新${_list.length}条数据！！！`)
+                self.scrollLiveBroadcast <= 0 ? self.scrollLiveBroadcast-- : self.scrollLiveBroadcast++
+                console.log('gogoogo')
+                self.$set(this.pullDownRefresh, 'success', ' 已为您更新数据！！！')
               } else if (this.typeScroll === 'DN' && num <= 5) {
-                self.scroll <= 0 ? self.scroll-- : self.scroll++
+                self.scrollLiveBroadcast <= 0 ? self.scrollLiveBroadcast-- : self.scrollLiveBroadcast++
                 self.$set(this.pullDownRefresh, 'success', '已是最新数据！！！')
               }
             }, 1500)
@@ -1233,23 +2465,22 @@
               }
             }, 1500)
             break
-          case 'LiveBroadcast':
-            while (count-- && count-- > 1) {
-              _list.push(this.LiveBroadcast[count])
+          case 'popular':
+            while (count--) {
+              _list.push(this.popularList[count])
             }
-            console.log(_list, num)
             setTimeout(() => {
               if (this.typeScroll === 'UP' && num > 5) {
-                self.LiveBroadcast = [...self.LiveBroadcast, {theme: 1, time: 45}, ..._list]
-                self.scrollLiveBroadcast < 0 ? self.scrollLiveBroadcast = 1 : self.scrollLiveBroadcast++
+                self.popularList = [...self.popularList, ..._list]
+                self.scrollPopular < 0 ? self.scrollPopular = 1 : self.scrollPopular++
               } else if (this.typeScroll === 'UP' && num <= 5) {
-                self.scrollLiveBroadcast === 0 ? self.scrollLiveBroadcast-- : self.scrollLiveBroadcast = 0
+                self.scrollPopular === 0 ? self.scrollPopular-- : self.scrollPopular = 0
               } else if (this.typeScroll === 'DN' && num > 5) {
-                self.scrollLiveBroadcast <= 0 ? self.scrollLiveBroadcast-- : self.scrollLiveBroadcast++
-                self.LiveBroadcast = [..._list, {theme: 1, time: 45}, ...self.LiveBroadcast]
+                self.scrollPopular <= 0 ? self.scrollPopular-- : self.scrollPopular++
+                self.popularList = [..._list, ...self.popularList]
                 self.$set(this.pullDownRefresh, 'success', `已为您更新${_list.length}条数据！！！`)
               } else if (this.typeScroll === 'DN' && num <= 5) {
-                self.scrollLiveBroadcast <= 0 ? self.scrollLiveBroadcast-- : self.scrollLiveBroadcast++
+                self.scroll <= 0 ? self.scroll-- : self.scroll++
                 self.$set(this.pullDownRefresh, 'success', '已是最新数据！！！')
               }
             }, 1500)
@@ -1260,7 +2491,7 @@
       scrollUP(type) {
         this.typeScroll = 'UP'
         switch (type) {
-          case 'video':
+          case 'popular':
             this.getPostList(type)
             break
           case 'record':
@@ -1275,7 +2506,7 @@
       scrollDN(type) {
         this.typeScroll = 'DN'
         switch (type) {
-          case 'video':
+          case 'popular':
             this.getPostList(type)
             break
           case 'record':
@@ -1285,16 +2516,6 @@
             this.getPostList(type)
             break
         }
-      },
-      //频道删除
-      channelDelete(item, index) {
-        this.navList.splice(index, 1)
-        this.recommendList.unshift(item)
-      },
-      //增加频道
-      addChannel(item, index) {
-        this.navList.push(item)
-        this.recommendList.splice(index, 1)
       }
     },
     created() {
@@ -1302,9 +2523,6 @@
       })
     },
     filters: {
-      filterComment(val) {
-        return val === 0 ? '关注' : '取消关注'
-      },
       formatTime(val) {
         let secondTime = parseInt(val)// 秒
         let minuteTime = 0// 分
@@ -1349,9 +2567,6 @@
     position: absolute
     top: 0
     bottom: 0.91rem
-    /deep/ .scroll-box
-      -font-weight: 500
-    //box-shadow: -2px 0px 0px rgba(0,0,0,0.8);
     .body
       height: calc(100% - 1.5rem)
       overflow: hidden
@@ -1362,11 +2577,6 @@
             display: flex
             flex-wrap: wrap
             padding: 0 0.2rem
-            .app-list-theme1
-              flex: 0 0 49%
-              border-radius: 10px
-              &:nth-child(odd)
-                margin-right: 2%
           .slide
             height: auto
             margin-top: 0.2rem
@@ -1388,7 +2598,7 @@
           .list-item_wrapper
             .recommended-live-broadcast
               padding: 0 0.2rem
-              .head
+              .recommended-live-broadcast_head
                 height: 0.9rem
                 display: flex
                 justify-content: space-between
@@ -1400,14 +2610,9 @@
                   i
                     margin-left: 0.06rem
                     font-size: 0.4rem
-              .body
+              .recommended-live-broadcast_body
                 display: flex
                 flex-wrap: wrap
-                .app-list-theme1
-                  flex: 0 0 49%
-                  border-radius: 10px
-                  &:nth-child(odd)
-                    margin-right: 2%
               .recommended-live-broadcast_footer
                 height: 0.9rem
                 display: flex
@@ -1446,13 +2651,13 @@
                   .txt
                     font-weight: 600
                     font-size: 0.26rem
-                  .time,.name
-                    color: rgba(0,0,0,.6)
+                  .time, .name
+                    color: rgba(0, 0, 0, .6)
                     margin-left: 0.08rem
                 .right
                   display: flex
                   align-items: center
-                  color: rgba(0,0,0,.6)
+                  color: rgba(0, 0, 0, .6)
                   i
                     font-size: 0.4rem
               .hour-list_item
@@ -1471,7 +2676,7 @@
                   white-space nowrap
                   margin-top: 0.1rem
                 .type
-                  color: rgba(0,0,0,.6)
+                  color: rgba(0, 0, 0, .6)
                   font-size: 0.24rem
                   transform: scale(0.8)
                   margin-top: 0.1rem
@@ -1495,20 +2700,15 @@
                 .left
                   font-weight: 600
                 .right
-                  color: rgba(0,0,0,.6)
+                  color: rgba(0, 0, 0, .6)
                   display: flex
                   align-items: center
                   i
-                      font-size: 0.4rem
+                    font-size: 0.4rem
               .label-list_body
                 padding: 0 0.2rem
                 display: flex
                 flex-wrap: wrap
-                .app-list-theme1
-                  flex: 0 0 49%
-                  border-radius: 10px
-                  &:nth-child(odd)
-                    margin-right: 2%
           .slide
             height: auto
             margin-top: 0.2rem
@@ -1555,6 +2755,550 @@
                 overflow: hidden
                 margin-top: 0.12rem
                 margin-bottom: 0.12rem
+      .popular
+        background-color: #fff
+        .popular-head
+          background-color: #fff
+          height: 0.8rem
+          display: flex
+          position: relative
+          &:after
+            height: 1px
+            position: absolute
+            bottom: 0
+            left: 0
+            content: ''
+            width: 100%
+            background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+          .popular-head_item
+            flex: 1
+            display: flex
+            align-items: center
+            justify-content: center
+            height: 100%
+            position: relative
+            &:first-child
+              &:after
+                position: absolute
+                content: ''
+                right: 0
+                top: 50%
+                width: 1px
+                height: 40%
+                background-color: #e5e5e5
+                transform translateY(-50%)
+      .movie
+        background-color: #fff
+        .slide
+          height: auto
+          margin-top: 0.2rem
+          /deep/ .dots
+            position relative
+            bottom: 15px
+            width: 100%
+            display: flex
+            justify-content: flex-end
+            padding-right: 0.4rem
+          .imgWrapper
+            padding: 0 0.2rem
+            > img
+              width: 100%
+              border-radius: 4px
+        .label-list-wrapper
+          position: relative
+          padding-bottom: 0.2rem
+          &:after
+            height: 1px
+            position: absolute
+            bottom: 0
+            left: 0
+            content: ''
+            width: 100%
+            background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+          .label-list_top
+            height: 0.9rem
+            padding: 0 0.2rem
+            display: flex
+            justify-content: space-between
+            align-items: center
+            .left
+              font-weight: 600
+            .right
+              color: rgba(0, 0, 0, .6)
+              display: flex
+              align-items: center
+              i
+                font-size: 0.4rem
+          .label-list_body
+            padding: 0 0.2rem
+            display: flex
+            flex-wrap: wrap
+            .app-list-theme1
+              flex: 0 0 32%
+              border-radius: 10px
+              margin-right: 2%
+              &:nth-child(3n+3)
+                margin-right: 0%
+              .desc
+                top: 0
+                bottom: auto
+                padding: 0
+                i
+                  background-color: rgba(0, 0, 0, .2)
+                  border-bottom-right-radius: 10px
+                .member
+                  padding: 0.04rem
+                  display: inline-block
+                  transform: scale(0.8)
+                  background-color: #f45a8d
+                  color: #fff
+        .head-list
+          padding: 0.1rem 0.2rem 0.2rem
+          display: flex
+          position: relative
+          &:after
+            height: 1px
+            position: absolute
+            bottom: 0
+            left: 0
+            content: ''
+            width: 100%
+            background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+          .head-list_item
+            flex: 1
+            display: flex
+            flex-direction: column
+            align-items: center
+            img
+              width: 60%
+            .txt
+              margin-top: 0.1rem
+        .relatedSuggestion
+          .relatedSuggestion_head
+            text-align: left
+            height: 0.9rem
+            line-height: 0.9rem
+            padding: 0 0.2rem
+            font-weight: 600
+          .left
+            position: relative
+            img
+              width: 100%
+              border-radius: 10px
+            .desc
+              position: absolute
+              right: 0.08rem
+              bottom: 0.08rem
+              background-color: rgba(0, 0, 0, .2)
+              .time
+                padding: 0.04rem
+                border-radius: 2px
+                color: rgba(255, 255, 255, .7)
+          .right
+            margin-left: 0.2rem
+            text-align: left
+            height: 100%
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+            .title
+              line-height: 1.3
+              overflow: hidden
+              display: -webkit-box
+              -webkit-line-clamp: 2
+              -webkit-box-orient: vertical
+              word-break: break-all
+              text-overflow: ellipsis
+            .type
+              min-height: 0.32rem
+              .txt
+                display: inline-block
+                &.is-hot
+                  background-color: #f90
+                  padding: 0.04rem
+                  border-radius: 4px
+                  color: #fff
+                  font-size: 0.24rem
+            .name
+              color: rgba(0, 0, 0, .6)
+              margin-top: 0.1rem
+            .seeAndTimeWrapper
+              height: 0.4rem
+              display: flex
+              justify-content: space-between
+              align-items: center
+              color: rgba(0, 0, 0, .6)
+              .see
+                margin-right: 0.1rem
+        .comingSoon
+          .comingSoon_head
+            text-align: left
+            height: 0.9rem
+            line-height: 0.9rem
+            padding: 0 0.2rem
+            font-weight: 600
+          .comingSoon_content
+            position: relative
+            height: 3.62rem
+            .scroll-box
+              position: absolute
+              left: 0
+              width: 100%
+              z-index 9999
+              .scroll-item
+                &:first-child
+                  .item_head
+                    .special
+                      background-color: #fff !important
+                .comingSoon_content-item
+                  display: flex
+                  flex-direction: column
+                  align-items: center
+                  width 1.7rem
+                  .item_head
+                    width: 100%
+                    display: flex
+                    align-items: center
+                    padding: 0.08rem 0
+                    .line
+                      flex: 1
+                      height: 2px
+                      background-color aqua
+                    .time
+                      padding: 0.04rem 0.08rem
+                      background-color: aqua
+                      border-radius: 10px
+                  .item_body
+                    width: 100%
+                    padding: 0 0.1rem
+                    position: relative
+                    img
+                      width: 100%
+                    .type
+                      position: absolute
+                      right: 0.1rem
+                      top: 0.06rem
+                      font-size: 0.24rem
+                      transform: scale(.8)
+                      padding: 0.04rem 0.04rem
+                      background-color: #f45a8d
+                      color: #fff
+                      border-radius: 2px
+                    .fans
+                      position: absolute
+                      left: 0.1rem
+                      bottom: 0.1rem
+                      font-size: 0.24rem
+                      transform: scale(.8)
+                      color: #fff
+                  .item_footer
+                    width: 100%
+                    .name
+                      display: block
+                      width: 100%
+                      padding: 0.1rem 0
+                      overflow: hidden
+                      text-overflow: ellipsis
+                      white-space: nowrap
+                    /deep/ .yd-btn
+                      height: 0.4rem
+                      line-height: 0.4rem
+                      padding: 0 0.12rem
+                      border: 1px solid #f45a8d
+                      span
+                        display: flex
+                        align-items: center
+                        i
+                          margin-right: 0.08rem
+        .exclusivePlanning
+          .exclusivePlanning_head
+            padding: 0 0.2rem
+            height: 0.9rem
+            display: flex
+            justify-content: space-between
+            align-items: center
+            .exclusivePlanning_left
+              font-weight: 600
+            .exclusivePlanning_right
+              display: flex
+              align-items: center
+              color: rgba(0, 0, 0, .6)
+          .exclusivePlanning_content
+            .exclusivePlanning_content-item
+              text-align: left
+              padding: 0.2rem
+              position: relative
+              &:after
+                height: 1px
+                position: absolute
+                bottom: 0
+                left: 0
+                content: ''
+                width: 100%
+                background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+              img
+                width: 100%
+              .name
+                display: inline-block
+                margin-top: 0.1rem
+              .time,.txt
+                margin-left: 0.1rem
+      .chasing
+        background-color: #fff
+        .slide
+          height: auto
+          margin-top: 0.2rem
+          /deep/ .dots
+            position relative
+            bottom: 15px
+            width: 100%
+            display: flex
+            justify-content: flex-end
+            padding-right: 0.4rem
+          .imgWrapper
+            padding: 0 0.2rem
+            > img
+              width: 100%
+              border-radius: 4px
+        .label-list-wrapper
+          position: relative
+          padding-bottom: 0.2rem
+          &:after
+            height: 1px
+            position: absolute
+            bottom: 0
+            left: 0
+            content: ''
+            width: 100%
+            background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+          .label-list_top
+            height: 0.9rem
+            padding: 0 0.2rem
+            display: flex
+            justify-content: space-between
+            align-items: center
+            .left
+              font-weight: 600
+            .right
+              color: rgba(0, 0, 0, .6)
+              display: flex
+              align-items: center
+              i
+                font-size: 0.4rem
+          .label-list_body
+            padding: 0 0.2rem
+            display: flex
+            flex-wrap: wrap
+            .app-list-theme1
+              flex: 0 0 32%
+              border-radius: 10px
+              margin-right: 2%
+              &:nth-child(3n+3)
+                margin-right: 0%
+              .desc
+                top: 0
+                bottom: auto
+                padding: 0
+                i
+                  background-color: rgba(0, 0, 0, .2)
+                  border-bottom-right-radius: 10px
+                .member
+                  padding: 0.04rem
+                  display: inline-block
+                  transform: scale(0.8)
+                  background-color: #f45a8d
+                  color: #fff
+        .head-list
+          padding: 0.1rem 0.2rem 0.2rem
+          display: flex
+          position: relative
+          &:after
+            height: 1px
+            position: absolute
+            bottom: 0
+            left: 0
+            content: ''
+            width: 100%
+            background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+          .head-list_item
+            flex: 1
+            display: flex
+            flex-direction: column
+            align-items: center
+            img
+              width: 60%
+            .txt
+              margin-top: 0.1rem
+        .relatedSuggestion
+          .relatedSuggestion_head
+            text-align: left
+            height: 0.9rem
+            line-height: 0.9rem
+            padding: 0 0.2rem
+            font-weight: 600
+          .left
+            position: relative
+            img
+              width: 100%
+              border-radius: 10px
+            .desc
+              position: absolute
+              right: 0.08rem
+              bottom: 0.08rem
+              background-color: rgba(0, 0, 0, .2)
+              .time
+                padding: 0.04rem
+                border-radius: 2px
+                color: rgba(255, 255, 255, .7)
+          .right
+            margin-left: 0.2rem
+            text-align: left
+            height: 100%
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+            .title
+              line-height: 1.3
+              overflow: hidden
+              display: -webkit-box
+              -webkit-line-clamp: 2
+              -webkit-box-orient: vertical
+              word-break: break-all
+              text-overflow: ellipsis
+            .type
+              min-height: 0.32rem
+              .txt
+                display: inline-block
+                &.is-hot
+                  background-color: #f90
+                  padding: 0.04rem
+                  border-radius: 4px
+                  color: #fff
+                  font-size: 0.24rem
+            .name
+              color: rgba(0, 0, 0, .6)
+              margin-top: 0.1rem
+            .seeAndTimeWrapper
+              height: 0.4rem
+              display: flex
+              justify-content: space-between
+              align-items: center
+              color: rgba(0, 0, 0, .6)
+              .see
+                margin-right: 0.1rem
+        .comingSoon
+          .comingSoon_head
+            text-align: left
+            height: 0.9rem
+            line-height: 0.9rem
+            padding: 0 0.2rem
+            font-weight: 600
+          .comingSoon_content
+            position: relative
+            height: 3.62rem
+            .scroll-box
+              position: absolute
+              left: 0
+              width: 100%
+              z-index 9999
+              .scroll-item
+                &:first-child
+                  .item_head
+                    .special
+                      background-color: #fff !important
+                .comingSoon_content-item
+                  display: flex
+                  flex-direction: column
+                  align-items: center
+                  width 1.7rem
+                  .item_head
+                    width: 100%
+                    display: flex
+                    align-items: center
+                    padding: 0.08rem 0
+                    .line
+                      flex: 1
+                      height: 2px
+                      background-color aqua
+                    .time
+                      padding: 0.04rem 0.08rem
+                      background-color: aqua
+                      border-radius: 10px
+                  .item_body
+                    width: 100%
+                    padding: 0 0.1rem
+                    position: relative
+                    img
+                      width: 100%
+                    .type
+                      position: absolute
+                      right: 0.1rem
+                      top: 0.06rem
+                      font-size: 0.24rem
+                      transform: scale(.8)
+                      padding: 0.04rem 0.04rem
+                      background-color: #f45a8d
+                      color: #fff
+                      border-radius: 2px
+                    .fans
+                      position: absolute
+                      left: 0.1rem
+                      bottom: 0.1rem
+                      font-size: 0.24rem
+                      transform: scale(.8)
+                      color: #fff
+                  .item_footer
+                    width: 100%
+                    .name
+                      display: block
+                      width: 100%
+                      padding: 0.1rem 0
+                      overflow: hidden
+                      text-overflow: ellipsis
+                      white-space: nowrap
+                    /deep/ .yd-btn
+                      height: 0.4rem
+                      line-height: 0.4rem
+                      padding: 0 0.12rem
+                      border: 1px solid #f45a8d
+                      span
+                        display: flex
+                        align-items: center
+                        i
+                          margin-right: 0.08rem
+        .exclusivePlanning
+          .exclusivePlanning_head
+            padding: 0 0.2rem
+            height: 0.9rem
+            display: flex
+            justify-content: space-between
+            align-items: center
+            .exclusivePlanning_left
+              font-weight: 600
+            .exclusivePlanning_right
+              display: flex
+              align-items: center
+              color: rgba(0, 0, 0, .6)
+          .exclusivePlanning_content
+            .exclusivePlanning_content-item
+              text-align: left
+              padding: 0.2rem
+              position: relative
+              &:after
+                height: 1px
+                position: absolute
+                bottom: 0
+                left: 0
+                content: ''
+                width: 100%
+                background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+              img
+                width: 100%
+              .name
+                display: inline-block
+                margin-top: 0.1rem
+              .time,.txt
+                margin-left: 0.1rem
       .slide
         height: 100%
         /deep/ .slide-group
@@ -1624,29 +3368,20 @@
         align-items: center
         .icon-shuaxin
           font-size: 0.30rem
-    .popupShow-wrapper
-      /deep/ .yd-popup-show
-        background-color: transparent
-        padding-bottom: 0.2rem
-        .popup-content, .cancel
-          background-color: #fff
-          width: 95%
-          margin: 0 auto
-          border-radius: 4px
-        .popup-content
-          .popup-content_top
-            padding: 0.5rem 0.2rem
-            border-1px(#e5e5e5)
-            .scroll-box
-              border-none()
-          .popup-content_bottom
-            padding: 0.5rem 0.2rem
-            .scroll-box
-              border-none()
-        .cancel
-          display: block
-          margin-top: 0.2rem
-          text-align: center
-          font-size: 0.30rem
-          padding: 0.3rem 0
+    .me-broadcast-live
+      position: absolute
+      right: 0.2rem
+      bottom: 0.8rem
+      z-index: 9999
+      width: 1rem
+      height: 1rem
+      border-radius: 50%
+      background-color: #f45a8d
+      display: flex
+      justify-content: center
+      align-items: center
+      a
+        font-size: 0.3rem
+        font-weight: 600
+        color: #f5ebeb
 </style>

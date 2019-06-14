@@ -1,105 +1,14 @@
 <template>
   <article class="app-list" :class="classes">
-    <div class="app-list-item" v-if="theme ===1">
-      <div class="app-list-top" v-if="!!$slots.top">
-        <slot name="top"></slot>
-      </div>
-      <div class="app-list-title" v-if="!!$slots.title">
-        <slot name="title"></slot>
-      </div>
+    <div class="app-list-item">
+      <slot name="top" v-if="!!$slots.top"></slot>
+      <slot name="body" v-if="!!$slots.body"></slot>
       <slot name="other" v-if="!!$slots.other"></slot>
-    </div>
-    <div class="app-list-item" v-if="theme ===2" :class="!!$slots.img?'left_right':''">
-      <template v-if="!!$slots.img">
-        <div class="left">
-          <div class="app-list-title" v-if="!!$slots.title">
-            <slot name="title"></slot>
-          </div>
-          <div class="app-list-subtitle" v-if="!!$slots.subtitle">
-            <slot name="subtitle"></slot>
-          </div>
-        </div>
-        <div class="app-list-img" v-if="!!$slots.img">
-          <slot name="img"></slot>
-        </div>
-      </template>
-      <template v-else>
-        <div class="app-list-title" v-if="!!$slots.title">
-          <slot name="title"></slot>
-        </div>
-        <div class="app-list-imgs" v-if="!!$slots.imgs">
-          <slot name="imgs"></slot>
-        </div>
-        <div class="app-list-advertising" v-if="!!$slots.advertising">
-          <slot name="advertising"></slot>
-        </div>
-        <div class="app-list-subtitle" v-if="!!$slots.subtitle">
-          <slot name="subtitle"></slot>
-        </div>
-      </template>
-    </div>
-    <div class="app-list-item" v-if="theme ===3">
-      <div class="app-list-title" v-if="!!$slots.title">
-        <slot name="title"></slot>
-      </div>
-      <div class="app-list-carAdvertising" v-if="!!$slots.carAdvertising">
-        <slot name="carAdvertising"></slot>
-      </div>
-      <div class="app-list-bottom" v-if="!!$slots.bottom">
-        <slot name="bottom"></slot>
-      </div>
-    </div>
-    <div class="app-list-item" v-if="theme ===4">
-      <div class="app-list-top" v-if="!!$slots.top">
-        <slot name="top"></slot>
-      </div>
-      <div class="app-list-body" v-if="!!$slots.body">
-        <slot name="body"></slot>
-      </div>
-      <div class="app-list-bodySpecial" v-if="!!$slots.bodySpecial">
-        <slot name="bodySpecial"></slot>
-      </div>
-      <div class="app-list-footer" v-if="!!$slots.footer">
-        <slot name="footer"></slot>
-      </div>
-    </div>
-    <div class="app-list-item" v-if="theme ===5">
-      <div class="app-list-top" v-if="!!$slots.top">
-        <slot name="top"></slot>
-      </div>
-      <div class="app-list-title" v-if="!!$slots.title">
-        <slot name="title"></slot>
-      </div>
-      <div class="app-list-body" v-if="!!$slots.body">
-        <slot name="body"></slot>
-      </div>
-      <div class="app-list-footer" v-if="!!$slots.footer">
-        <slot name="footer"></slot>
-      </div>
-    </div>
-    <div class="app-list-item" v-if="theme ===6">
-      <div class="app-list-title" v-if="!!$slots.title">
-        <slot name="title"></slot>
-      </div>
-      <div class="app-list-body" v-if="!!$slots.body">
-        <slot name="body"></slot>
-      </div>
-      <div class="app-list-footer" v-if="!!$slots.footer">
-        <slot name="footer"></slot>
-      </div>
-    </div>
-    <div class="app-list-item" v-if="theme ===7">
-      <div class="app-list-top" v-if="!!$slots.top">
-        <slot name="top"></slot>
-      </div>
-      <div class="app-list-body" v-if="!!$slots.body">
-        <slot name="body"></slot>
-      </div>
     </div>
   </article>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
   export default {
     props: {
       theme: {
@@ -125,74 +34,58 @@
   .app-list
     position: relative
     overflow: hidden
-    .app-list-img
-      //height: 0
-      width: 100%
-      //padding: 50% 0
-      overflow: hidden
-      img
-        width: 100%
-        //margin-top: -50%
-        background-color: rgba(255, 255, 255, 0.9)
-        border: none
-        display: block
-    .app-list-mes
-      background-color: #FFF
-      .app-list-title
-        color: #505050
-        font-size: .26rem
-        text-align: justify
-        font-weight: 800
     &.app-list-theme1
       margin-bottom: 0.2rem
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1)
+      flex: 0 0 49%
+      border-radius: 10px
+      &:nth-child(odd)
+        margin-right: 2%
       &:nth-last-child(2)
         margin-bottom: 0
       &:last-child
         margin-bottom: 0
       .app-list-item
-        .app-list-top
-          .top
-            position: relative
-            img
-              width: 100%
-            .desc
-              position: absolute
-              bottom: 0
-              left: 0
-              width: 100%
-              padding: 0 0.1rem 0.1rem
+        text-align: left
+        .app-list-item_top
+          position: relative
+          img
+            width: 100%
+          .desc
+            position: absolute
+            bottom: 0
+            left: 0
+            width: 100%
+            padding: 0 0.1rem 0.1rem
+            display: flex
+            justify-content: space-between
+            align-items: center
+            color: rgba(255, 255, 255, .7)
+            .play, .comment, .time,.fans
               display: flex
-              justify-content: space-between
               align-items: center
-              .play,.comment,.time
-                display: flex
-                align-items: center
-                color: rgba(255,255,255,.7)
-                >i
-                  font-size: 0.4rem
-        .app-list-title
-          text-align: left
+              > i
+                font-size: 0.4rem
+        .app-list-item_body
           font-size: 0.26rem
           padding: 0.1rem 0.1rem 0.24rem
           min-height: 0.96rem
-          span
-            line-height: 1.3
-            display: inline-block
-            overflow: hidden
-            display: -webkit-box
-            -webkit-line-clamp: 2
-            -webkit-box-orient: vertical
-            word-break: break-all
-            text-overflow: ellipsis
-        .other
+          line-height: 1.3
+          display: inline-block
+          overflow: hidden
+          display: -webkit-box
+          -webkit-line-clamp: 2
+          -webkit-box-orient: vertical
+          word-break: break-all
+          text-overflow: ellipsis
+        .app-list-item_other
           display: flex
           justify-content: space-between
           align-items: center
           padding: 0.1rem
           .other_left
             transform: scale(0.8)
-            color: rgba(0,0,0,.6)
+            color: rgba(0, 0, 0, .6)
             &.is-hot
               padding: 0.04rem
               background-color: #ff9900
@@ -201,527 +94,181 @@
               margin-right: 0.1rem
               padding: 0.04rem
               border: 1px solid #e5e5e5
-      &.is-LiveBroadcast
-        box-shadow : none
+      &.is-special
+        box-shadow: none
         border-radius: 0
         .app-list-item
-          .app-list-top
-            .top
-              img
-                border-radius: 10px
-              .desc
-                .name,.fans
-                  font-size: 0.24rem
-                  transform: scale(0.8)
-                  color: rgba(0,0,0,.6)
-                .fans
-                  display: flex
-                  align-items: center
-                  >i
-                    font-size: 0.4rem
-          .app-list-title
+          .app-list-item_top
+            img
+              border-radius: 10px
+          .app-list-item_body
+            width: 100%
             padding: 0.1rem
-            min-height: 0.32rem
-            span
-              display: inline-block
-              overflow: hidden
-              display: -webkit-box
-              -webkit-line-clamp: 1
-              -webkit-box-orient: vertical
-              word-break: break-all
-              text-overflow: ellipsis
-          .other
-            .type
-              font-size: 0.24rem
-              color: rgba(0,0,0,.6)
-    &.app-list-theme2
-      background-color: #fff
-      .app-list-item
-        position: relative
-        margin: 0 0.2rem
-        border-1px(#e5e5e5)
-        .app-list-title
-          padding: 0.3rem 0 0.2rem
-          text-align: left
-          font-size: 0.30rem
-        .app-list-imgs
-          overflow: hidden
-          display: flex
-          margin-bottom: 0.2rem
-          .img-wrapper
-            //width: 32%
-            //overflow: hidden
-            flex: 1
-            &:not(:first-child)
-              margin-left: 2%
-            > img
-              width: 100%
-        .app-list-advertising
-          margin-bottom: 0.2rem
-          .advertising-top_avatar
-            position: relative
-            .img-mask
-              position: relative
-              .mask
-                position: absolute
-                top: 0
-                bottom: 0
-                left: 0
-                right: 0
-                background-color: rgba(0, 0, 0, .9)
-                z-index: 1
-              > img
-                width: 100%
-            .information
-              position: absolute
-              top: 0
-              bottom: 0
-              left: 0
-              right: 0
-              z-index 2
-              .replay
-                position: absolute
-                left: 0.2rem
-                bottom: 0.2rem
-                width: inherit
-                color: #fff
-                display: flex
-                align-items: center
-                > i
-                  margin-right: 0.06rem
-                  font-size: 0.34 re
-              .center
-                position: absolute
-                left: 50%
-                top: 50%
-                transform: translate(-50%, -50%)
-                width: inherit
-                display: flex
-                flex-direction: column
-                align-items: center
-                > img
-                  border-radius: 50%
-                .txt
-                  color: #fff
-                  margin-top: 0.1rem
-                  margin-bottom: 0.16rem
-          .advertising-bottom_download
-            padding: 0.16rem 0.12rem
-            background-color: #e5e5e5
-            display: flex
-            justify-content: space-between
-            align-items: center
-            > a
-              display: inline-block
-              width: inherit
-              padding: 0.08rem
-              color: #197ADE
-              border: 1px solid #197ADE
-              border-radius: 4px
-        .app-list-subtitle
-          text-align: left
-          font-size: 0.24rem
-          padding-bottom: 0.3rem
-          color: #666
-          position: relative
-          span
+            min-height: auto
+            line-height: 1
             display: inline-block
-            &:not(:last-child)
-              margin-right: 0.1rem
-            &.top
-              color: red
-              padding: 0.02rem 0.04rem
-              border-radius: 2px
-              border: 1px solid red
-            &.hot
-              color: red
-              padding: 0.02rem 0.04rem
-              border-radius: 2px
-              border: 1px solid red
-            &.ad
-              color: #197ADE
-              padding: 0.02rem 0.04rem
-              border-radius: 2px
-              border: 1px solid #197ADE
-            &.delete
-              position: absolute
-              right: 0
-              top: 0
-              padding: 0.02rem 0.06rem
-              border: 1px solid #666
+            overflow: hidden
+            white-space nowrap
+            word-break: break-all
+            text-overflow: ellipsis
+          .app-list-item_other
+            justify-content: flex-start
+            .other_left
+              transform none
+              flex: 1
               display: flex
               align-items: center
-              justify-content: center
-              border-radius: 4px
-              > i
-                font-size: 0.2rem
-        &.left_right
-          display: flex
-          padding: 0.2rem 0
-          .left
-            flex: 1
-            overflow: hidden
-            display: flex
-            flex-direction: column
-            justify-content: space-between
-            padding: 0.1rem 0
-            .app-list-title
-              word-wrap: break-word
-              word-break: break-all
-              padding: 0
-            .app-list-subtitle
-              padding-bottom: 0.1rem
-          .app-list-img
-            flex: 0 0 2.4rem
-            margin-left: 0.2rem
-    &.app-list-theme3
-      margin-top: 0.1rem
-      margin-bottom: 0.2rem
-      background-color: #fff
-      .app-list-item
-        margin: 0 0.2rem
-        position: relative
-        text-align: left
-        .app-list-title
-          font-size: 0.3rem
-          display: flex
-          justify-content: space-between
-          align-items: center
-          padding: 0.2rem 0
-          .delete
-            display: flex
-            justify-content: center
-            align-items: center
-            padding: 0.02rem 0.06rem
-            border: 1px solid #666
-            border-radius: 4px
-            > i
-              font-size: 0.2rem
-        .app-list-carAdvertising
-          .car-item
-            display: flex
-            justify-content: space-between
-            align-items: center
-            padding: 0.24rem 0
-            border-1px(#e5e5e5)
-            .flex_left
-              display: flex
-              .img-wrapper
-                flex: 0 0 2rem
-                > img
-                  width: 100%
-              .detail
-                flex: 1
+              padding: 0.1rem 0
+              img
+                width: 0.6rem
+                height: 0.6rem
+                border-radius: 50%
+              .title-user
                 display: flex
                 flex-direction: column
-                justify-content: space-between
-                padding: 0.1rem 0.24rem
-                .name
-                  font-size: 0.3rem
-                .subscription
-                  font-size: 0.24rem
-            .yd-btn
-              height: 0.5rem
-              border-radius: 4px
-        .app-list-bottom
-          .txt
-            display: flex
-            align-items: center
-            padding: 0.16rem 0
-            > i
-              margin-left: 0.1rem
-              font-size: 0.34rem
-    &.app-list-theme4
-      margin-top: 0.1rem
-      margin-bottom: 0.2rem
+                text-align: left
+                margin-left: 0.2rem
+                .title
+                  color: #000
+                .user
+                  margin-top: 0.1rem
+            .other_right
+              flex: 0 0 0.46rem
+            .type
+              font-size: 0.24rem
+              color: rgba(0, 0, 0, .6)
+    &.app-list-theme2
       background-color: #fff
+      padding: 0.16rem 0.2rem
       position: relative
       &:after
-        display: block
+        height: 1px
         position: absolute
-        left: 0
         bottom: 0
-        border-top: 1px solid #e5e5e5
-        width: 100%
+        left: 0
         content: ''
+        width: 100%
+        background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
       .app-list-item
-        margin: 0 0.2rem
-        position: relative
-        text-align: left
-        .app-list-top
-          display: flex
-          justify-content: space-between
-          padding: 0.2rem 0
-          .top_left
-            display: flex
-            .img-wrapper
-              height: 0
-              overflow: hidden
-              width: 0.6rem
-              padding: 0.3rem 0
-              border-radius: 50%
-              > img
-                width: 100%
-                margin-top: -50%
-                display: block
-                border: none
-            .title
-              margin-left: 0.2rem
-              > span
-                display: block
-              .name
-                margin-bottom: 0.1rem
-              .dedescription
-                color: #666
-
-          .top_right
-            > a
-              display: inline-block
-              width: inherit
-              margin-right: 0.4rem
-              color: #ef4f4f
-              font-weight: 600
-            .delete
-              display: inline-block
-              padding: 0 0.06rem
-              border: 1px solid #666
-              border-radius: 4px
-              > i
-                font-size: 0.2rem
-        .app-list-body
-          .content
-            font-size: 0.28rem
-            padding: 0.14rem 0
-          .img-wrapper
-            > img
-              width: 32%
-              margin-right: 2%
-              &:nth-child(3)
-                margin-right: 0
-        .app-list-footer
-          display: flex
-          padding: 0.16rem 0
-          > span
-            flex: 1
-            display: flex
-            justify-content: center
-            align-items: center
-            font-size: 0.26rem
-            > i
-              margin-right: 0.16rem
-              font-size: 0.4rem
-        .app-list-bodySpecial
-          display: flex
-          margin-bottom: 0.2rem
-          .bodySpecial_left
-            flex: 1
-            padding: 0.1rem 0
-            display: flex
-            flex-direction: column
-            justify-content: space-between
-            .comment
-              display: block
-              margin-top: 0.2rem
-          .bodySpecial_right
-            flex: 0 0 2.4rem
-            margin-left: 0.2rem
-            > img
-              width: 100%
-              background-color: rgba(255, 255, 255, 0.9)
-              border: none
-              display: block
-    &.app-list-theme5
-      background-color: #fff
-      &:not(:last-child)
-        margin-bottom: 0.16rem
-      &.is-fullScreen
-        .app-list-item
-          margin: 0
-          .app-list-top, .app-list-title
-            margin: 0 0.2rem
-      .app-list-item
-        margin: 0 0.2rem
-        position: relative
-        text-align: left
-        .app-list-top
-          display: flex
-          justify-content: space-between
-          padding: 0.2rem 0
-          .top_left
-            display: flex
-            .img-wrapper
-              height: 0
-              overflow: hidden
-              width: 0.6rem
-              padding: 0.3rem 0
-              border-radius: 50%
-              > img
-                width: 100%
-                margin-top: -50%
-                display: block
-                border: none
-            .title
-              margin-left: 0.2rem
-              > span
-                display: block
-              .name
-                margin-bottom: 0.1rem
-              .fan
-                color: #666
-                .description
-                  margin-left: 0.2rem
-                  position: relative
-                  &:before
-                    position: absolute
-                    top: 0.12rem
-                    left: -0.14rem
-                    content: '.'
-                    width: 0.06rem
-                    height: 0.06rem
-                    background-color: #666
-          .top_right
-            .delete
-              display: inline-block
-              padding: 0 0.06rem
-              border: 1px solid #666
-              border-radius: 4px
-              > i
-                font-size: 0.2rem
-        .app-list-title
-          font-size: 0.32rem
-          padding-bottom: 0.2rem
-        .app-list-body
-          .img-wrapper
-            position: relative
-            > img
-              width: 100%
-            .LiveBroadcasting
-              position: absolute
-              top: 0.1rem
-              left: 0.1rem
-              padding: 0.06rem
-              border-radius: 4px
-              color: #fff
-              background-color: #ef4f4f
-              z-index: 2
-            .popularity
-              position: absolute
-              top: 0.12rem
-              left: 0.88rem
-              padding: 0.04rem 0.08rem
-              border-radius: 4px
-              color: #fff
-              background-color: #666
-              z-index: 1
-        .app-list-footer
-          display: flex
-          padding: 0.16rem 0
-          > span
-            flex: 1
-            display: flex
-            justify-content: center
-            align-items: center
-            font-size: 0.26rem
-            > i
-              margin-right: 0.16rem
-              font-size: 0.4rem
-    &.app-list-theme6
-      display: inline-block
-      width: 50%
-      &:nth-child(even)
-        .app-list-body
+        display: flex
+        .app-list-item_top
+          flex: 0 0 3rem
           position: relative
-          left: 1%
-      .app-list-item
-        position: relative
-        text-align left
-        .app-list-title
-          z-index: 1
-          position: absolute
-          bottom: 0.6rem
-          left: 0
-          width: 100%
-          font-size: 0.28rem
-          padding: 0 0.1rem
-          overflow: hidden
-          display: -webkit-box
-          -webkit-line-clamp: 2
-          -webkit-box-orient: vertical
-          word-break: break-all
-          text-overflow: ellipsis
-          line-height: 1.5
-        .app-list-body
-          width: 99%
-          overflow: hidden
-          > img
+          img
             width: 100%
-            border: none
-            display: block
-        .app-list-footer
-          position: absolute
-          bottom: 0
-          left: 0
-          width: 100%
-          height: 0.6rem
+            border-radius: 10px
+          .desc
+            position: absolute
+            right: 0.08rem
+            bottom: 0.08rem
+            background-color: rgba(0, 0, 0, .2)
+            .time
+              padding: 0.04rem
+              border-radius: 2px
+              color: rgba(255, 255, 255, .7)
+        .app-list-item_body
+          flex: 1
+          margin-left: 0.2rem
+          text-align: left
+          //height: 100%
           display: flex
+          flex-direction: column
           justify-content: space-between
-          align-items: center
-          padding: 0 0.1rem
-          .play
+          .title
+            line-height: 1.3
+            overflow: hidden
+            display: -webkit-box
+            -webkit-line-clamp: 2
+            -webkit-box-orient: vertical
+            word-break: break-all
+            text-overflow: ellipsis
+          .type
+            min-height: 0.32rem
+            .txt
+              display: inline-block
+              &.is-hot
+                background-color: #f90
+                padding: 0.04rem
+                border-radius: 4px
+                color: #fff
+                font-size: 0.24rem
+          .name
+            color: rgba(0, 0, 0, .6)
+            margin-top: 0.1rem
+          .seeAndTimeWrapper
+            height: 0.4rem
             display: flex
+            justify-content: space-between
             align-items: center
-    &.app-list-theme7
-      background-color: #fff
-      &:not(:last-child)
-        margin-bottom: 0.16rem
+            color: rgba(0, 0, 0, .6)
+            .see
+              margin-right: 0.1rem
+    &.app-list-theme3
+      padding: 0.2rem 0
       .app-list-item
-        //margin: 0 0.2rem
-        position: relative
-        text-align: left
-        .app-list-top
-          display: flex
-          justify-content: space-between
-          padding: 0.2rem 0
-          margin: 0 0.2rem
-          .top_left
+        .app-list-item_top
+          .top_head
             display: flex
-            .img-wrapper
-              height: 0
-              overflow: hidden
-              width: 0.6rem
-              padding: 0.3rem 0
-              border-radius: 50%
-              > img
-                width: 100%
-                margin-top: -50%
-                display: block
-                border: none
-            .title
-              margin-left: 0.2rem
-              > span
-                display: block
-              .name
-                margin-bottom: 0.1rem
-              .fan
-                color: #666
-                .description
-                  margin-left: 0.2rem
-                  position: relative
-                  &:before
-                    position: absolute
-                    top: 0.12rem
-                    left: -0.14rem
-                    content: '.'
-                    width: 0.06rem
-                    height: 0.06rem
-                    background-color: #666
-          .top_right
+            justify-content: space-between
+            align-items: center
+            margin-bottom: 0.2rem
+            .top_head-left
+              display: flex
+              align-items: center
+              img
+                width: 0.6rem
+                height: 0.6rem
+                border-radius: 50%
+              .name-time
+                margin-left: 0.2rem
+                display: flex
+                flex-direction: column
+                text-align: left
+                .name
+                  color: #f45a8d
+                .time
+                  color: rgba(0, 0, 0, .6)
+                  margin-top: 0.1rem
+            .top_head-right
+              display: flex
+              align-items: center
+              .attention
+                border: 1px solid #f45a8d
+                color: #f45a8d
+                padding: 0.04rem 0.14rem
+                border-radius: 4px
+                display: flex
+                align-items: center
+                margin-right: 0.16rem
+          .top_title
+            text-align: left
+            margin-bottom: 0.2rem
+            .type
+              color: blue
+        .app-list-item_body
+          position: relative
+          img
+            width: 100%
+          .desc
+            position: absolute
+            bottom: 0.1rem
+            left: 0.1rem
+            color: rgba(255, 255, 255, .7)
+        .app-list-item_other
+          text-align: left
+          .description
+            color: #333
+            padding: 0.1rem 0
+          .options
+            height: 0.6rem
             display: flex
             align-items: center
-        .app-list-body
-          .img-wrapper
-            > img
-              width: 32%
-              &:not(:last-child)
-                margin-right: 2%
+            > span
+              flex: 1
+              display: flex
+              justify-content: center
+              align-items: center
+              color: rgba(0, 0, 0, .6)
+              > i
+                margin-right: 0.1rem
 </style>

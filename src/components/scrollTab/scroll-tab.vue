@@ -4,7 +4,7 @@
       <!--:class="index === activeIndex?'is-acitve':''"-->
       <li class="list-item" v-for="(nav,index) in navList" :key="index" @click="changeActiveIndex(index)"
           :style="{fontSize:fontSize, height:height,lineHeight: height}"
-          :class="{'is-acitve':index === activeIndex,'list-item_icon':icon}"
+          :class="{'is-active':index === activeIndex,'list-item_icon':icon}"
           ref="scrollLi">
         <!--nav数据-->
         <a class="list-item_val"
@@ -129,12 +129,13 @@
         let ulWidth = 0
         let liArr = this.$refs.scrollLi
         liArr.forEach((item) => {
-          ulWidth += (item.offsetWidth / 100 * 2)
+          ulWidth += (item.offsetWidth)
         })
+        console.log(ulWidth)
         if (this.special) {
-          this.$refs.scrollUl.style.width = (ulWidth + 0.8) + 'rem'
+          this.$refs.scrollUl.style.width = (ulWidth + 30) + 'px'
         } else {
-          this.$refs.scrollUl.style.width = ulWidth + 'rem'
+          this.$refs.scrollUl.style.width = ulWidth + 'px'
         }
         this.$nextTick(() => {
           if (!this.scroll) {
@@ -175,7 +176,7 @@
       .list-item
         display: inline-block
         overflow: hidden
-        &.is-acitve
+        &.is-active
           .list-item_val
             position: relative
             &:after

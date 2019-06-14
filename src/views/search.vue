@@ -16,24 +16,27 @@
     </div>
     <div class="scroll">
       <app-scroll>
-        <div class="search-recommend" v-if="!recordHideControl">
-          <span v-for="(item,index) in searchRecommend" :key="index" class="item">{{item}}</span>
+        <div class="head">
+          <span class="txt">大家都在搜</span>
+          <a href="javascript:void(0) " class="expand" @click="expand">展开</a>
         </div>
-        <div class="history-record">
-          <div class="history-record_head">
-            <a @click="historyRecordMore" href="javascript: void(0)">历史记录<i :class="iconShow?'icon-arrow-up':'icon-arrow-down'"></i></a>
-            <i class="icon-shanchu"></i>
+        <div class="expand-list">
+          <a href="javascript:void(0)" class="expand-list_item" v-for="(item,index) in expandList"
+             :key="index">{{item}}</a>
+        </div>
+        <div class="img-wrapper">
+          <img :src="img" alt="" class="img">
+        </div>
+        <div class="searchHistory">
+          <span class="txt">搜索历史</span>
+          <div class="history-list">
+            <a href="javascript:void(0)" class="history-list_item" v-for="(item,index) in historyList"
+               :key="index">{{item}}</a>
           </div>
-          <div class="history-record_body" :class="iconShow?'history-record-more':''">
-            <span class="item" v-for="(item,index) in historyRecord" :key="index">{{item}}</span>
+          <div class="clear-history-wrapper">
+            <a href="javascript:void(0)" class="clear-history">清空搜索历史</a>
           </div>
         </div>
-        <div class="more-record" v-if="!recordHideControl">
-          <span class="item" v-for="(item,index) in historyRecord" :key="index">{{item}}</span>
-          <a class="item hide" href="javascript: void(0)" @click="recordHide"><i class="icon-shanchu"></i>隐藏推荐词</a>
-        </div>
-        <a href="javascript: void(0)" v-if="recordHideControl" class="show"
-        @click="recordShow"><i class="icon-shanchu"></i>查看全部推荐词</a>
       </app-scroll>
     </div>
   </div>
@@ -46,15 +49,27 @@
     },
     data() {
       return {
-        searchRecommend: ['优速董事长妻子身亡', '携号转网流程', '郭德纲于谦相声合集', '辣椒炒秋葵教学视频'],
-        historyRecord: ['苹果手机降级教程', 'NBA', '柠檬干的正确泡发', '胸闷气短是怎么回事', '小米粥的做法', '多罗罗', '怎么吃能防癌', '黑洞照片', '剁椒鱼头的做法', '股市今日行情', '烈士亲人你在哪里', 'GRF大战STK', '退休工资计算法', '天气预报', '男士短发发型图'],
         currentValue: '',
         placeholder: '搜索',
-        recordHideControl: false,
-        iconShow: false //历史记录小图标
+        //展开列表
+        expandM: false,
+        expandList: ['RUNNINGMAN', '明日方舟', '罗汉', '燃茶', '巴拉巴拉小魔仙', '游乐王子', '王嘉尔', '周琛',
+          '极限挑战', '华为', '非正式会谈', '创造营', '周杰伦', 'blackpink', '少年歌行', 'rng', '新宝岛', '切尔洛贝利', '第五人格', '多罗罗'],
+        img: require('../assets/image/banner_1.jpg'),
+        historyList: ['极限挑战', '华为', '非正式会谈', '创造营', '周杰伦', 'blackpink']
       }
     },
     methods: {
+      expand() {
+        let dom = document.querySelector('.scroll .expand-list')
+        if (!this.expandM) {
+          dom.style.height = 'auto'
+          this.expandM = true
+        } else {
+          dom.style.height = 1.44 + 'rem'
+          this.expandM = false
+        }
+      },
       //取消
       cancel() {
         this.$router.go(-1)
@@ -63,18 +78,6 @@
       submit() {
         console.log(this.$refs.search.setBlur())
         this.$refs.search.setBlur()
-      },
-      //更多历史记录
-      historyRecordMore() {
-        this.iconShow = !this.iconShow
-      },
-      //隐藏推荐词
-      recordHide() {
-        this.recordHideControl = true
-      },
-      //查看全部推荐词
-      recordShow() {
-        this.recordHideControl = false
       }
     },
     mounted() {
@@ -93,13 +96,13 @@
     width: 100%
     background-color: #fff
     .head-search
-      height: 1rem
+      height: 0.8rem
       display: flex
-      padding: 0.1rem 0.2rem
-      background-color: #ed4040
+      padding: 0.14rem 0.2rem
+      background-color: #f45a8d
       .head-search_searchBox
         flex: 1
-        border-radius: 3px
+        border-radius: 15px
         background-color: #fff
         display: flex
         align-items: center
@@ -108,6 +111,8 @@
           width: 100%
           display: flex
           align-items: center
+          i
+            font-size: 0.4rem
       .head-search_cancel
         flex: 0 0 0.6rem
         margin-left: 0.22rem
@@ -115,100 +120,88 @@
         justify-content: center
         align-items: center
         color: #fff
-        font-size: 0.28rem
+        font-size: 0.26rem
     .scroll
-      height: calc(100% - 1rem)
-      .search-recommend
-        margin: 0 0.2rem
-        padding-top: 0.1rem
-        padding-bottom: 0.16rem
-        border-1px(#e5e5e5)
-        .item
-          font-size: 0.30rem
-          display: inline-block
-          width: 50%
-          padding: 0.16rem 0 0.16rem 0
-          &:nth-child(odd)
-            position: relative
-            &:after
-              content: ''
-              position: absolute
-              top: 50%
-              right: 0
-              width: 1px
-              height: 50%
-              transform: translate(0, -50%)
-              background-image: linear-gradient(to right, #e5e5e5 50%, transparent 50%)
-          &:nth-child(even)
-            padding-left: 0.2rem
-      .history-record
-        margin: 0 0.2rem
-        .history-record_head
-            padding: 0.2rem 0
-            display: flex
-            justify-content: space-between
-            >a
-              display: flex
-              align-items: center
-              font-size: 0.24rem
-              .icon-arrow-down,.icon-arrow-up
-                  font-size: 0.4rem
-            .icon-shanchu
-                font-size: 0.4rem
-        .history-record_body
-          height: 1.9rem
-          overflow: hidden
-          border-1px(#e5e5e5)
-          &.history-record-more
-            height: auto
-          .item
-            font-size: 0.30rem
-            display: inline-block
-            width: 50%
-            padding: 0.16rem 0 0.16rem 0
-            &:nth-child(odd)
-              position: relative
-              &:after
-                content: ''
-                position: absolute
-                top: 50%
-                right: 0
-                width: 1px
-                height: 50%
-                transform: translate(0, -50%)
-                background-image: linear-gradient(to right, #e5e5e5 50%, transparent 50%)
-            &:nth-child(even)
-              padding-left: 0.2rem
-      .more-record
-        margin: 0 0.2rem
-        padding-top: 0.1rem
-        .item
-          font-size: 0.30rem
-          display: inline-block
-          width: 50%
-          padding: 0.16rem 0 0.16rem 0
-          &:nth-child(odd)
-            position: relative
-            &:after
-              content: ''
-              position: absolute
-              top: 50%
-              right: 0
-              width: 1px
-              height: 50%
-              transform: translate(0, -50%)
-              background-image: linear-gradient(to right, #e5e5e5 50%, transparent 50%)
-          &:nth-child(even)
-            padding-left: 0.2rem
-          &.hide
-            .icon-shanchu
-              position: relative
-              top: 0.08rem
-      .show
+      height: calc(100% - 0.8rem)
+      background-color: rgba(0, 0, 0, .1)
+    .head
+      height: 0.7rem
+      padding: 0 0.2rem
+      display: flex
+      justify-content: space-between
+      align-items: center
+      position: relative
+      background-color: #fff
+      &:after
+        height: 1px
+        position: absolute
+        bottom: 0
+        left: 0
+        content: ''
+        width: 100%
+        background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+      .expand
+        color: rgba(0, 0, 0, .6)
+    .expand-list
+      overflow: hidden
+      padding: 0.2rem 0.2rem 0
+      height: 1.44rem
+      background-color: #fff
+      .expand-list_item
+        float: left
+        border-radius: 5px
+        padding: 0.1rem 0.24rem
+        background-color: rgba(0, 0, 0, .1)
+        margin-right: 0.2rem
+        margin-bottom: 0.2rem
+    .img-wrapper
+      padding: 0.12rem 0.2rem
+      background-color: rgba(0, 0, 0, .1)
+      .img
+        width: 100%
+        border-radius: 4px
+    .searchHistory
+      background-color: #fff
+      .txt
+        padding: 0 0.2rem
+        height: 0.7rem
+        display: flex
+        align-items: center
+        position: relative
+        &:after
+          height: 1px
+          position: absolute
+          bottom: 0
+          left: 0
+          content: ''
+          width: 100%
+          background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+      .history-list
+        overflow: hidden
+        padding: 0.2rem
+        height: 1.44rem
+        background-color: #fff
+        position: relative
+        &:after
+          height: 1px
+          position: absolute
+          bottom: 0
+          left: 0
+          content: ''
+          width: 100%
+          background-image: linear-gradient(0deg, #e5e5e5 50%, transparent 50%);
+        .history-list_item
+          float: left
+          border-radius: 5px
+          padding: 0.1rem 0.24rem
+          background-color: rgba(0, 0, 0, .1)
+          margin-right: 0.2rem
+          margin-bottom: 0.2rem
+      .clear-history-wrapper
+        height: 0.8rem
         display: flex
         justify-content: center
         align-items: center
-        padding: 0.2rem 0
-        font-size: 0.28rem
-        color: #666
+        .clear-history
+          color: rgba(0,0,0,.6)
 </style>
